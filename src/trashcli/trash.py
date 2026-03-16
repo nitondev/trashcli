@@ -57,10 +57,13 @@ def list_trash() -> list[dict]:
         config.optionxform = str
         config.read(info_file)
         section = config["Trash Info"]
+        trash_path = FILES_DIR / info_file.stem
+        item_type = "dir" if trash_path.is_dir() else "file"
         items.append(
             {
                 "id": len(items) + 1,
                 "name": info_file.stem,
+                "type": item_type,
                 "path": section.get("Path", ""),
                 "deleted": section.get("DeletionDate", ""),
             }

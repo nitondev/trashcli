@@ -25,9 +25,10 @@ trash -ls
 Output:
 
 ```
-ID   NAME                           DELETED
-1    file.txt                       2026-03-16
-2    image.png                      2026-03-15
+ID   TYPE   NAME                           DELETED
+1    file   file.txt                       2026-03-16
+2    file   image.png                      2026-03-15
+3    dir    pictures                       2026-03-15
 ```
 
 ### Restore a file

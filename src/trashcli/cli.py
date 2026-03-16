@@ -1,5 +1,8 @@
-import argparse
 import sys
+
+sys.dont_write_bytecode = True
+
+import argparse  # noqa: E402
 
 
 def build_parser() -> argparse.ArgumentParser:
