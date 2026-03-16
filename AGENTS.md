@@ -43,10 +43,19 @@ Allowed commit types:
 - `test:` – adding or updating tests  
 - `fix:` – bug fixes  
 - `feat:` – new features
-### Formatting  
-  
-Run before committing:  
-```shell  
-ruff check .  
+### Formatting
+
+Run before committing:
+```shell
+ruff check .
 ruff format .
 ```
+
+### Testing
+
+Run tests with:
+```shell
+.venv/bin/pytest tests/ -v
+```
+
+Note: `uv` may not be in PATH. Use `.venv/bin/pip3` to install packages and `.venv/bin/pytest` to run tests directly.
