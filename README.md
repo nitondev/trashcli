@@ -25,10 +25,10 @@ trash -ls
 Output:
 
 ```
-ID   TYPE   NAME                           DELETED
-1    file   file.txt                       2026-03-16
-2    file   image.png                      2026-03-15
-3    dir    pictures                       2026-03-15
+ID   TYPE   NAME                           OWNER                DELETED
+1    file   file.txt                       alice                2026-03-16
+2    file   image.png                      alice                2026-03-15
+3    dir    pictures                       bob                  2026-03-15
 ```
 
 ### Restore a file
@@ -37,7 +37,11 @@ ID   TYPE   NAME                           DELETED
 trash -mv 1
 ```
 
-Restores the file to its original location.
+Restores the file to its original location. If the destination already exists, you will be prompted to confirm before overwriting. Use `--overwrite` to skip the prompt:
+
+```shell
+trash -mv 1 --overwrite
+```
 
 ### Permanently delete a file
 
