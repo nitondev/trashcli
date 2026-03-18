@@ -1,3 +1,4 @@
+import pwd
 import shutil
 from configparser import ConfigParser
 from datetime import datetime
@@ -59,12 +60,18 @@ def list_trash() -> list[dict]:
         section = config["Trash Info"]
         trash_path = FILES_DIR / info_file.stem
         item_type = "dir" if trash_path.is_dir() else "file"
+        try:
+            uid = trash_path.stat().st_uid
+            owner = pwd.getpwuid(uid).pw_name
+        except (FileNotFoundError, KeyError):
+            owner = ""
         items.append(
             {
                 "id": len(items) + 1,
                 "name": info_file.stem,
                 "type": item_type,
                 "path": section.get("Path", ""),
+                "owner": owner,
                 "deleted": section.get("DeletionDate", ""),
             }
         )
@@ -79,12 +86,17 @@ def _get_item_by_id(item_id: int) -> dict:
     raise ValueError(f"no item with ID {item_id}")
 
 
-def restore_item(item_id: int) -> None:
+def restore_item(item_id: int, overwrite: bool = False) -> None:
     item = _get_item_by_id(item_id)
     src = FILES_DIR / item["name"]
     dest = Path(item["path"])
     if dest.exists():
-        raise FileExistsError(f"'{dest}' already exists")
+        if not overwrite:
+            raise FileExistsError(f"'{dest}' already exists")
+        if dest.is_dir():
+            shutil.rmtree(dest)
+        else:
+            dest.unlink()
     dest.parent.mkdir(parents=True, exist_ok=True)
     shutil.move(str(src), dest)
     (INFO_DIR / f"{item['name']}.trashinfo").unlink()

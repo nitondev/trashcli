@@ -19,6 +19,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--all", action="store_true", help="used with -rm to empty trash"
     )
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="overwrite existing file when restoring (skips prompt)",
+    )
     return parser
 
 
@@ -33,7 +38,7 @@ def main() -> None:
     elif args.mv is not None:
         from trashcli.commands.restore import cmd_restore
 
-        cmd_restore(args.mv)
+        cmd_restore(args.mv, overwrite=args.overwrite)
     elif args.rm is not None:
         if args.all:
             from trashcli.commands.empty import cmd_empty
