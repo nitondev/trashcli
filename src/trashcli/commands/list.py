@@ -6,7 +6,11 @@ def cmd_list() -> None:
     if not items:
         print("trash is empty")
         return
-    print(f"{'ID':<4} {'TYPE':<6} {'NAME':<30} {'DELETED'}")
+    print(f"{'ID':<4} {'TYPE':<6} {'NAME':<30} {'OWNER':<20} {'DELETED'}")
     for item in items:
         deleted = item["deleted"][:10] if item["deleted"] else ""
-        print(f"{item['id']:<4} {item['type']:<6} {item['name']:<30} {deleted}")
+        owner = item.get("owner", "")
+        print(
+            f"{item['id']:<4} {item['type']:<6} {item['name']:<30}"
+            f" {owner:<20} {deleted}"
+        )

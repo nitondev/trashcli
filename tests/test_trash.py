@@ -1,3 +1,4 @@
+import pwd
 from datetime import datetime
 from unittest.mock import patch
 
@@ -96,6 +97,16 @@ class TestListTrash:
         items = list_trash()
         assert items[0]["deleted"].startswith(datetime.now().strftime("%Y-%m-%d"))
 
+    def test_item_has_owner(self, trash_dirs, tmp_path):
+        src = tmp_path / "file.txt"
+        src.write_text("hello")
+        move_to_trash(str(src))
+        items = list_trash()
+        import os
+
+        expected_owner = pwd.getpwuid(os.getuid()).pw_name
+        assert items[0]["owner"] == expected_owner
+
 
 class TestRestoreItem:
     def test_restores_file(self, trash_dirs, tmp_path):
@@ -120,6 +131,16 @@ class TestRestoreItem:
         src.write_text("already here")
         with pytest.raises(FileExistsError):
             restore_item(1)
+
+    def test_overwrite_replaces_existing_file(self, trash_dirs, tmp_path):
+        src = tmp_path / "file.txt"
+        src.write_text("original")
+        move_to_trash(str(src))
+        src.write_text("already here")
+        restore_item(1, overwrite=True)
+        assert src.exists()
+        assert src.read_text() == "original"
+        assert not (trash_dirs["files"] / "file.txt").exists()
 
     def test_raises_on_invalid_id(self, trash_dirs):
         with pytest.raises(ValueError):
